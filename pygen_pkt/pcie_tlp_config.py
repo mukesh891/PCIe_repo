@@ -19,8 +19,8 @@ class pcie_pkg:
         self.name = name
         self.size_in_bytes = vsc.uint32_t(i=size_in_bytes)
         self.xwr = vsc.uint8_t(i=xwr)
-
-    def print_var(self):
+        #self.print_var(self)
+  #def print_var(self):
         print(self.transaction_type)
         print(self.bdf)
         print(self.cfg_type)
@@ -31,9 +31,9 @@ class pcie_pkg:
         print(self.command_num)
 
 
-pkg = pcie_pkg
+pkg = pcie_pkg()
+'''
 
-pkg.print_var()'''
 #print(pkg.__dir__())
 #pprint(pkg.inspect.get_members())
 #class cfg_type(IntEnum):
@@ -64,9 +64,6 @@ class pcie_pkg:
 
 pkg = pcie_pkg()
 pkg.print_var()
-
-
-
 
 
 
