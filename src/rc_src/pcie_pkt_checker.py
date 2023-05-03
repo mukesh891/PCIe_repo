@@ -16,6 +16,8 @@ class checker_pkt():
                     bin_str = re.sub("^0b",'',bin_s)
                     #line = re.sub(" ","",line)
                     print(line,"->",bin_s,"->" , bin_str[len(bin_str)-4:len(bin_str)])
+                    transaction_type =bin_str[0:7)
+                    print(transaction_type)
         except FileNotFoundError:
             print("The file could not be found.")
         except IOError:
@@ -24,8 +26,8 @@ class checker_pkt():
             print("An unexpected error occurred:", str(e))
         finally:
             print("Done with file operations.")
-#c=checker_pkt()
-#c.checker_fn()
+c=checker_pkt()
+c.checker_fn()
                 #bdf, conf_type, block, ep, td = packet_check
                 #block = pkt_dict.get("block")
 		    	#bdf = pkt_dict.get("bdf")

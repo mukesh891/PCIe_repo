@@ -11,7 +11,6 @@ import random
 from pprint import pprint
 
 from enum import IntEnum
-from bitstring import BitArray
 
 #class pcie_pkg:
 class pcie_tx_item:
