@@ -1,16 +1,16 @@
-from ep_base import *
+import sys
+sys.path.append("/home/mukesh/PCIe/PCIe_repo/src/")
+from pcie_lib import *
+from pcie_ep_tx_item import *
+from pcie_config_obj import *
 
+print("hello pcie_ep_cfg_base_seq")
 
-print("checker block")
-
-received_pkt = open("received_pkt.txt","w")
-received_valid_pkt = open("received_valid_pkt.txt","w")
-received_invalid_pkt = open("received_invalid_pkt.txt","w")
-
-class ep_check_pkt(ep_base_pkt):
-
-
-	def ep_fn(self, pkt_num):
+class pcie_ep_cfg_base_seq(pcie_ep_tx_item):
+    print("2. This is pcie_ep_cfg_pkt")
+    def __init__(self):
+        super().__init__()
+    def ep_fn(self, pkt_num):
 		TLP = ep_base_pkt.checker_fn_base(self, pkt_num)
 		received_pkt.write('TLP: {} {}\n'.format((TLP[0:96]), (TLP[96:128])))
 		received_pkt.write('header is {}, Data is {}\n'.format(hex(int(TLP[0:96], 2)), hex(int(TLP[96:128], 2))))
@@ -212,4 +212,4 @@ class ep_check_pkt(ep_base_pkt):
 																					  Register_Num, Data))
 			return True
 
-
+ 

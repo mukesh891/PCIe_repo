@@ -1,4 +1,4 @@
-import os
+import os,queue
 import argparse
 cwd = os.getcwd()
 class pcie_config_obj:
@@ -17,5 +17,6 @@ argv = pcie_config_obj.parse_args()
         
 #obj=ex()
 #print(num_pkts)
-
+pkt_queue = queue.Queue()
+pkt_queue
 
