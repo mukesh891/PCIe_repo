@@ -1,13 +1,13 @@
 import random
 from pprint import pprint
 
-from pcie_seq_tlp_item_base_pkg import *
-from pcie_com_file import *
+from pcie_rc_tx_item import *
+from pcie_config_obj import *
 import queue
 print("hello pcie_seq_config_pkg")
-f = open("hex_file.txt","w")
-class pcie_seq_rc_config_pkt(pcie_pkg):
-        def __init__(self):
+bin_f = open("bin_file.txt","w")
+class pcie_seq_rc_config_pkt(pcie_rc_tx_item):
+    def __init__(self):
         self.num_pkts=argv.num_pkts        
         self.err_eij = argv.err_eij
         self.err_pkt_no = argv.err_pkt_no
@@ -90,9 +90,9 @@ class pcie_seq_rc_config_pkt(pcie_pkg):
     def print_f(self):
         pprint(vars(self))
     def bin_file_handle(self):
-        bin_f = open("bin_file.txt","w")
+        #for i in range(100):
         self.k=self.k+1
-        #self.cfg0_pkt()
+        self.cfg0_pkt()
         ## converting all the values to bin format ##
         if(self.err_eij):
             if (self.arr[self.j]==self.k and self.j < len(self.arr)-1):
@@ -152,11 +152,11 @@ class pcie_seq_rc_config_pkt(pcie_pkg):
         
         ## puting the tlp_packet into queue ##
         pkt_queue.put(tlp_packet)
-        #print(pkt)
+        print(tlp_packet)
         ## Writing the tlp_packet into the hex_fil.txt ##
         bin_f.write(tlp_packet)
         bin_f.write("\n")
-        bin_f.close()
+        #bin_f.close()
         
     def hex_file_handle(self):
         bin_f = open("/home/mukesh/PCIe/PCIe_repo/src/rc_src/bin_file.txt","r")
@@ -168,16 +168,214 @@ class pcie_seq_rc_config_pkt(pcie_pkg):
             if len(hex_val)==32:
                 hex_f.write(hex_val)
             else:
-                hex_val = "0"+hex_val
+                hex_val = ("0"*(32-len(hex_val)))+hex_val
                 hex_f.write(hex_val)
             print(hex_val)
             hex_f.write("\n")
         hex_f.close()
         bin_f.close()
-
-
     def gen_log(self):
          
+        gen_f = open("genearator_out.log","w")
+            
+        num_pkts=argv.num_pkts        
+        for i in range(num_pkts):
+            self.cfg0_pkt()
+            self.bin_file_handle()
+            gen_f.write("---------------------------------- TLP ")
+            gen_f.write(str(i))
+            gen_f.write(" --------------------------------------- ")
+            gen_f.write("\n")
+            '''
+            Memory Read Request (MRd)                   000=3DW, no data 001=4DW, no data 00000
+                                                        
+            Memory Read Lock Request (MRdLk)            000= 3DW, no data 001=4DW, no data 0 0001
+                                                        
+            Memory Write Request (MWr)                  010 3DW, w/ data 011=4DW, w/ data 00000
+                                                        
+            IO Read Request (IORd)                      000=3DW, no data 0 0010
+                                                        
+            IO Write Request (IOWr)                     010=3DW, w/ data 0 0010
+            
+            Config Type 0 Read Request (CfgRd0)|        000=3DW, no data 0 0100
+            
+            Config Type 0 Write Request (CfgWr0)        010=3DW, w/ data 00100
+            
+            Config Type 1 Read Request (CfgRd1)         000=3DW, no data 0 0101
+            
+            Config Type 1 Write Request (CfgWr1)        010=3DW, w/ data 00101
+            
+            Message Request (Msg)                       001=4DW, no data 10 rrr* (see routing field)
+            
+            Message Request W/Data (MsgD)               011=4DW, w/ data 1 Orrr* (see routing field)
+            
+            
+            Completion (Cpl)                            000=3DW, no data 0 1010
+            
+            Completion W/Data (CpID)                    010=3DW, w/data  0 1010
+            
+            Completion-Locked (CpILk)                   000=3DW, no data 0 1011
+            
+            Completion W/Data (CplDLk)                  010=3DW, w/ data 0 1011
+            
+            Fetch and Add AtomicOp Request              010=3DW, w/ data 011-4DW, w/ data 0 1100
+            '''
+
+            if((self.fmt==0) and (self.type==0)): 
+                 gen_f.write("Memory Read Request (MRd) with 3DW, no data           ")
+                 gen_f.write("\n")
+            if((self.fmt==1) and (self.type==0)): 
+                 gen_f.write("Memory Read Request (MRd) with 4DW, no data           ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==0) and (self.type==1)): 
+                 gen_f.write("Memory Read Lock Request (MRdLk) with 3DW, no data     ")
+                 gen_f.write("\n")
+            if((self.fmt==1) and (self.type==1)): 
+                 gen_f.write("Memory Read Lock Request (MRdLk) with 4DW, no data     ")
+                 gen_f.write("\n")
+                              
+            if((self.fmt==2) and (self.type==0)):
+                 gen_f.write("Memory Write Request (MWr) with 3DW, with data         ")
+                 gen_f.write("\n")
+            if((self.fmt==3) and (self.type==0)):                         
+                 gen_f.write("Memory Write Request (MWr) with 4DW, with data         ")
+                 gen_f.write("\n")
+                
+            if((self.fmt==0) and (self.type==2)): 
+                 gen_f.write("IO Read Request (IORd) with 3DW, no data               ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==2) and (self.type==2)): 
+                 gen_f.write("IO Write Request (IOWr) with 3DW, with data    ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==0) and (self.type==4)): 
+                 gen_f.write("Config Type 0 Read Request (CfgRd0) with 3DW, no data")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==2) and (self.type==4)): 
+                 gen_f.write("Config Type 0 Write Request (CfgWr0) with 3DW, with data")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==0) and (self.type==5)): 
+                 gen_f.write("Config Type 1 Read Request (CfgRd1) with 3DW, no data")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==2) and (self.type==5)): 
+                 gen_f.write("Config Type 1 Write Request (CfgWr1) with 3DW, with data")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==1) and (self.type==16)): 
+                 gen_f.write("Message Request (Msg) with 4DW, no data              ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==3) and (self.type==16)): 
+                 gen_f.write("Message Request W/Data (MsgD) with 4DW, with data      ")
+                 gen_f.write("\n")
+                 
+                 
+            if((self.fmt==0) and (self.type==10)): 
+                 gen_f.write("Completion (Cpl) with 3DW, no data                   ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==2) and (self.type==10)): 
+                 gen_f.write("Completion W/Data (CpID) with 3DW, with data           ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==0) and (self.type==11)): 
+                 gen_f.write("Completion-Locked (CpILk) with 3DW, no data          ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==2) and (self.type==11)): 
+                 gen_f.write("Completion W/Data (CplDLk) with 3DW, with data         ")
+                 gen_f.write("\n")
+                 
+            if((self.fmt==2) and (self.type==12)): 
+                 gen_f.write("Fetch and Add AtomicOp Request with 3DW, with data     ")
+                 gen_f.write("\n")
+            if((self.fmt==3) and (self.type==12)): 
+                 gen_f.write("Fetch and Add AtomicOp Request with 3DW, with data     ")
+                 gen_f.write("\n")
+
+
+            gen_f.write("fmt = ")
+            gen_f.write(hex(self.fmt))
+            gen_f.write("\n")
+            gen_f.write("type = ")
+            gen_f.write(hex(self.type))
+            gen_f.write("\n")
+            gen_f.write("reserve_bit1 = ")
+            gen_f.write(hex(self.reserve_bit1))       
+            gen_f.write("\n")
+            gen_f.write("tc = ")
+            gen_f.write(hex(self.tc       ))
+            gen_f.write("\n")
+            gen_f.write("reserve_bit2 = ")
+            gen_f.write(hex(self.reserve_bit2))       
+            gen_f.write("\n")
+            gen_f.write("attr1 = ")
+            gen_f.write(hex(self.attr1       ))
+            gen_f.write("\n")
+            gen_f.write("reserve_bit3 = ")
+            gen_f.write(hex(self.reserve_bit3))       
+            gen_f.write("\n")
+            gen_f.write("th = ")  
+            gen_f.write(hex(self.th          ))  
+            gen_f.write("\n")
+            gen_f.write("td = ")  
+            gen_f.write(hex(self.td          ))  
+            gen_f.write("\n")
+            gen_f.write("ep = ") 
+            gen_f.write(hex(self.ep          )) 
+            gen_f.write("\n")
+            gen_f.write("attr0 = ")
+            gen_f.write(hex(self.attr0       ))
+            gen_f.write("\n")
+            gen_f.write("at = ")
+            gen_f.write(hex(self.at          ))
+            gen_f.write("\n")
+            gen_f.write("length = ")
+            gen_f.write(hex(self.length      ))
+            gen_f.write("\n")
+            gen_f.write("requester_id = ")
+            gen_f.write(hex(self.requester_id))
+            gen_f.write("\n")
+            gen_f.write("tag = ")
+            gen_f.write("\n")
+
+
+            gen_f.write(hex(self.tag         ))
+            gen_f.write("\n")
+            gen_f.write("last_dw_be = ")
+            gen_f.write(hex(self.last_dw_be  ))
+            gen_f.write("\n")
+            gen_f.write("first_dw_be = ")
+            gen_f.write(hex(self.first_dw_be ))
+            gen_f.write("\n")
+            gen_f.write("completer_id = ")
+            gen_f.write(hex(self.completer_id))
+            gen_f.write("\n")
+            gen_f.write("reserve_bit4 = ")
+            gen_f.write(hex(self.reserve_bit4))
+            gen_f.write("\n")
+            gen_f.write("ext_register_number = ")
+            gen_f.write(hex(self.ext_register_number))
+            gen_f.write("\n")
+            gen_f.write("register_number = ")
+            gen_f.write(hex(self.register_number))    
+            gen_f.write("\n")
+            gen_f.write("reserve_bit5 = ")
+            gen_f.write(hex(self.reserve_bit5))       
+            gen_f.write("\n")
+            gen_f.write("payload = ")
+            gen_f.write(hex(self.payload)      )      
+            gen_f.write("\n")
+            gen_f.write("\n")
+        bin_f.close()        
+        self.hex_file_handle()
+
+    '''def gen_log(self):
         gen_f = open("genearator.csv","w")
         gen_f.write("fmt,")
         gen_f.write("type,")
@@ -207,28 +405,10 @@ class pcie_seq_rc_config_pkt(pcie_pkg):
 
         num_pkts=argv.num_pkts        
         for i in range(num_pkts):
-            
             self.cfg0_pkt()
             self.bin_file_handle()
-            #fmt_hex = hex(self.fmt)       
-            #requester_id_hex        = hex(self.requester_id) 
-            #completer_id_hex        = hex(self.completer_id)
-            #type_hex                = hex(self.type)      
-            #first_dw_be_hex         = hex(self.first_dw_be)
-            #ep_hex                  = hex(self.ep)        
-            #td_hex                  = hex(self.td)        
-            #tc_hex                  = hex(self.tc)        
-            #attr0_hex               = hex(self.attr0)
-            #attr1_hex               = hex(self.attr1)
-            #at_hex                  = hex(self.at)
-            #length_hex              = hex(self.length)
-            #tag_hex                 = hex(self.tag)
-            #last_dw_be_hex          = hex(self.last_dw_be)
-            #reserve_bit4_hex        = hex(self.reserve_bit4)
-            #ext_register_number_hex = hex(self.ext_register_number)
-            #register_number_hex     = hex(self.register_number)
-            #reserve_bit5_hex        = hex(self.reserve_bit5)
-            #payload_hex             = hex(self.payload)           
+            
+               
             gen_f.write(hex(self.fmt))
             gen_f.write(",")
             gen_f.write(hex(self.type))
@@ -275,10 +455,8 @@ class pcie_seq_rc_config_pkt(pcie_pkg):
             gen_f.write(",")
             gen_f.write(hex(self.payload)      )      
             gen_f.write("\n")
-        self.hex_file_handle()
-
-
-
+        bin_f.close()
+        self.hex_file_handle()'''
 
 c = pcie_seq_rc_config_pkt()
 #c.bin_file_handle()
@@ -286,4 +464,3 @@ c = pcie_seq_rc_config_pkt()
 #c.hex_file_handle()
 #c.mix_pkt()
 c.gen_log()
-

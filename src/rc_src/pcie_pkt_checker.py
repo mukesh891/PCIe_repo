@@ -212,4 +212,3 @@ class ep_check_pkt(ep_base_pkt):
 																					  Register_Num, Data))
 			return True
 
-
