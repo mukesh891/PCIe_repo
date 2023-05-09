@@ -1,3 +1,4 @@
+import random
 import os,queue
 import argparse
 cwd = os.getcwd()
@@ -19,5 +20,18 @@ argv = pcie_config_obj.parse_args()
 #obj=ex()
 #print(num_pkts)
 pkt_queue = queue.Queue()
+err_pkt_queue = queue.Queue()
 rc_reg = queue.Queue()
-
+  
+err_eij = argv.err_eij
+num_pkts = argv.num_pkts
+err_pkt_no = argv.err_pkt_no
+arr_t =[0]*err_pkt_no
+if(err_eij): 
+    for i in range(err_pkt_no):
+        arr_t[i] = random.randrange(num_pkts)
+    arr = list(set(arr_t))
+    arr.sort()
+    print(arr)
+    print(num_pkts)
+	
