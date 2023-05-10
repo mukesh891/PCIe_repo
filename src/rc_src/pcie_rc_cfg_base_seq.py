@@ -97,7 +97,7 @@ class pcie_seq_rc_config_pkt(pcie_rc_tx_item):
         if(self.err_eij):
             if (self.arr[self.j]==self.k and self.j < len(self.arr)-1):
                 self.fmt_eij_err()
-                print(self.fmt)
+                #print(self.fmt)
                 self.j=self.j+1
         fmt_str                 =format(self.fmt, '03b')       
         requester_id_str        =format(self.requester_id, '016b')       
@@ -152,7 +152,7 @@ class pcie_seq_rc_config_pkt(pcie_rc_tx_item):
         
         ## puting the tlp_packet into queue ##
         pkt_queue.put(tlp_packet)
-        print(tlp_packet)
+        #print(tlp_packet)
         ## Writing the tlp_packet into the hex_fil.txt ##
         bin_f.write(tlp_packet)
         bin_f.write("\n")
@@ -170,7 +170,7 @@ class pcie_seq_rc_config_pkt(pcie_rc_tx_item):
             else:
                 hex_val = ("0"*(32-len(hex_val)))+hex_val
                 hex_f.write(hex_val)
-            print(hex_val)
+            #print(hex_val)
             hex_f.write("\n")
         hex_f.close()
         bin_f.close()

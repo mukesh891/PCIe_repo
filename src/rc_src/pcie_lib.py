@@ -7,3 +7,5 @@ logging.basicConfig(level=logging.DEBUG)
 from pprint import pprint
 import argparse
 logging.info("HELLO THERE YOU ARE USING LIBRARY_RC")
+from pcie_config_obj import *
+

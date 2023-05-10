@@ -21,7 +21,10 @@ argv = pcie_config_obj.parse_args()
 #print(num_pkts)
 pkt_queue = queue.Queue()
 err_pkt_queue = queue.Queue()
+compl_pkt_queue = queue.Queue()
+pkt_with_flag_queue = queue.Queue()
 rc_reg = queue.Queue()
+
   
 err_eij = argv.err_eij
 num_pkts = argv.num_pkts
